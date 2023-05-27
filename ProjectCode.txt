@@ -1,0 +1,537 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
+#include <string.h>
+char option;
+void cafeAfisko();
+int order (int);
+int inventory(int, int);
+void printHeaderLines();
+void cafeReceipt(int);
+void AfiskoRooms();
+void roomBooking();
+int amount(int);
+int availability(int, int);
+void checkout();
+void DayEnd();
+
+int main()
+{
+    do
+    {
+        system("cls");
+        int choice;
+        printf("\n-------------------------------------------------------------\n");
+        printf("    ...............WELCOME TO HOTEL AFISKO...............");
+        printf("\n-------------------------------------------------------------\n");
+        //Displaying main options
+        printf("\n\tIf you are hungry, Visit CAFE AFISKO. Press 1.");
+        printf("\n\tIf you are tired, Go to AFISKO ROOMS. Press 2.");
+        printf("\n\tIf you are checking out of our hotel. Press 3.\n");
+        printf("\n\tIf the day has ended. Press 4.\n");
+        scanf("%d",&choice); //choosing what to do
+        while (choice!=1 && choice!=2 && choice!=3 && choice!=4)
+        {
+            printf("Sorry, this option is currently unavailable.\nPlease chose from the above mentioned choices.\n");
+            scanf("%d",&choice);
+        }
+        switch (choice)
+        {
+            case 1: cafeAfisko(); break;
+            case 2: AfiskoRooms(); break;
+            case 3: checkout(); break;
+            case 4: DayEnd(); break;
+        };
+    } while(option=='N'||option=='n');
+    if (option=='Y'||option=='y')
+    {
+        DayEnd();
+    }
+    return 0;
+}
+
+void cafeAfisko()
+{
+    system("cls");
+    printf("\n----------WELCOME TO CAFE AFISKO!----------\n");
+    FILE *fp; //file with the menu
+    int c, more, bill=0, price, check=0, item;
+    fp = fopen("Menu.txt","r");
+    //printing menu
+    while(1)
+    {
+      c = fgetc(fp);
+      if( feof(fp) )
+        {
+         break;
+        }
+      printf("%c", c);
+    }
+    fclose(fp);
+    do
+    {
+        //taking order
+        printf("\n\nEnter the number of the item to be ordered:\n");
+        do
+        {
+            scanf("%d",&item);
+            if (item<1 || item>15)
+            {
+                printf("Wrong Order number. Please re-enter:\n");
+                check=1;
+            }
+            else
+            {
+                check=0;
+                break;
+            }
+        } while (check=1);
+        price= order(item); //assigning price
+        inventory(item,0); //updating inventory/decreasing the number of items in the inventory
+        bill= bill+price; //calculating total bill
+        printf("\nAre there more items to be ordered?\nPress Y for 'yes' and N for 'no'");
+        more= getch();
+    } while (more == 'Y' || more == 'y');
+    cafeReceipt(bill); //printing the receipt
+    printf("\n Has the day ended? Press 'N' for No and 'Y' for Yes.");
+    option=getch();
+}
+
+int order (int menu)
+{
+    //getting the price of each item
+    //int price=0;
+    int price[]={80,120,200,200,350,400,380,80,100,90,120,50,60,100,200};
+    return price[menu-1];
+    /*switch(menu)
+    {
+        case 1: case 8:
+            price=80; break;
+        case 2: case 11:
+            price=120;
+        case 3: case 4: case 15:
+            price=200; break;
+        case 5:
+            price=350; break;
+        case 6:
+            price=400; break;
+        case 7:
+            price=380; break;
+        case 9: case 14:
+            price=100; break;
+        case 10:
+            price=90; break;
+        case 12:
+            price=50; break;
+        case 13:
+            price=60; break;
+    };
+    return (price);*/
+}
+
+int inventory(int item, int end)
+{
+    int index=item-1; //index for the array according to input
+    char separator = '=';
+    //opening the inventory
+    FILE *prodFile= fopen ("inventory.txt","r");
+
+    char fileLine[256];
+    int  fileLineLen;
+    char name[256];
+    char quantity[256];
+    int itemsInFile;
+
+    char prodName[20][256];
+    int prodQty[20];
+
+    int i=0,k;
+
+    fgets(fileLine,256,prodFile);
+    //checking if the file is empty
+    if (feof(prodFile))
+    {
+        printf ("No Data in this file. Exiting ....");
+        return 1;
+    }
+
+   k=0;
+   //taking input from file into an array
+    while(!feof(prodFile))
+    {
+        fileLineLen = strlen(fileLine);
+        i=0;
+        while(fileLine[i] != separator)
+        {
+            //taking input the name
+            name[i]=fileLine[i];
+            i++;
+        }
+        name[i]='\0';
+        int j=0;i++;
+        while (i<fileLineLen)
+        {
+            //taking input the quantity
+            quantity[j++]=fileLine[i++];
+        }
+        quantity[j]='\0';
+
+        prodQty[k] = atoi(quantity); //converting the quantity as string to integer putting it in array
+        strcpy(prodName[k],name); //putting the name into an array
+        fgets(fileLine,256,prodFile);
+        k++;
+    }
+    itemsInFile=k;
+    fclose(prodFile);
+
+    if (end==0) //the day has not ended
+    {
+        //decreasing the quantity of the item
+        prodQty[index] = prodQty[index]-1;
+        prodFile= fopen ("inventory.txt","w+");
+
+        for (k=0;k<=itemsInFile;k++)
+        {
+            //updating the quantity in the inventory
+            fprintf(prodFile, "%s=%d\n" , prodName[k],prodQty[k]);
+        }
+    }
+    else if (end==1) //when the day ends
+    {
+        prodFile= fopen ("inventory.txt","r");
+        printHeaderLines();
+        for (k=0;k<itemsInFile;k++)
+        {
+            //printing the inventory
+            printf ("%12d %-20s %10d\n",k+1,prodName[k],prodQty[k]);
+        }
+    }
+    fclose(prodFile);
+    return 0;
+}
+
+void printHeaderLines()
+{
+    printf("\n%12s %-20s %10s\n","Product Serial","Product Name","Quantity");
+    printf("%12s %-20s %10s\n","--------------","------------","--------");
+
+}
+
+void cafeReceipt(int bill)
+{
+    system("cls");
+    printf("\n   -------------------------------------------------\n");
+    printf("\t-----CAFE AFISKO RECEIPT-----\n");
+    printf("     Your total bill is %d PKR.\n     Please pay the bill at the counter.\n\t\t Thank You!\n",bill);
+    printf("   -------------------------------------------------\n");
+}
+
+void AfiskoRooms()
+{
+    system("cls");
+    printf("\n-------------WELCOME TO AFISKO ROOMS---------------\n\n");
+    FILE *froom;
+     char c;
+     froom= fopen("rooms.txt","r");
+     //printing the list of rooms from a file
+     while(1)
+    {
+      c = fgetc(froom);
+      if( feof(froom) )
+        {
+         break;
+        }
+      printf("%c", c);
+    }
+    fclose(froom);
+    roomBooking(); //booking the room
+ }
+
+void roomBooking()
+{
+    int price, type, roomrent, check=0, days;
+       char cname[30];
+        printf("Booking a room.\n");
+        printf("\nPlease enter information of the Customer:\n");
+            //taking input customer information for booking of room
+            FILE *fp = fopen("customer.txt","a+");
+            printf("Enter name: \n");
+            scanf("%s",&cname);
+            printf("Enter no. of days of stay: \n");
+            scanf("%d",&days);
+            printf("Enter the number of the required type of room:\n");
+            scanf("%d",&type);
+            //checking if the type is available
+            while (type<1 || type>3)
+            {
+                printf("Type does not exist. Please re-enter:\n");
+                scanf("%d",&type);
+            }
+            check=availability(type,0); //checking if a room of that type is available
+            while (check==1)
+            {
+                printf("Sorry, room not available. Please choose another room.\n");
+                scanf("%d",&type);
+                check=availability(type,0);
+            }
+            price = amount(type); //getting price of the selected room
+            roomrent = days * price; //calculating total room rent
+            //saving all the information in a file
+            fprintf(fp,"%s: %s\n%s: %d\n%s %d\n\n","Name",cname,"Number of Days",days,"Total Room Rent",roomrent);
+            getch();
+
+        system("cls");
+        //printing booking details
+        printf("--------------------------------------------------\n");
+        printf("\tYour booking is successful!\n\n");
+        printf("\tName: ");
+        puts(cname);
+        printf("\tNo. of Days: %d", days);
+        printf("\n\tPrice per day is: PKR %d/-", price);
+        printf ("\n\tYour Total Amount is: PKR %d/-\n\n", roomrent);
+        printf("\tEnjoy your stay at Afisko Rooms!");
+        printf("\n-------------------------------------------------\n");
+        printf("\n Has the day ended? Press 'N' for No and 'Y' for Yes.");
+        option=getch();
+}
+
+int amount(int choice)
+{
+    //getting to know the rent of the selected room
+    int rent;
+    switch(choice)
+    {
+        case 1: rent = 10000; break;
+        case 2: rent = 15000; break;
+        case 3: rent = 20000; break;
+    };
+    return rent;
+}
+
+int availability(int type, int end)
+{
+    //checking for availability
+    int index=type-1;
+    char separator = '=';
+    //opening file
+    FILE *prodFile= fopen ("availableroom.txt","r");
+
+    char fileLine[256];
+    int  fileLineLen;
+    char typeroom[256];
+    char quantity[256];
+    int itemsInFile;
+
+    char roomType[5][256];
+    int NumberOfRooms[5];
+
+    int i=0,k;
+
+    fgets(fileLine,256,prodFile);
+    //checking if the file is empty
+    if (feof(prodFile))
+    {
+        printf ("No Data in this file. Exiting ....");
+        return 1;
+    }
+    // load data in array
+    k=0;
+    while(!feof(prodFile))
+    {
+        fileLineLen = strlen(fileLine);
+        i=0;
+        while(fileLine[i] != separator)
+        {
+            typeroom[i]=fileLine[i]; //taking input the type of room
+            i++;
+        }
+        typeroom[i]='\0';
+        int j=0;i++;
+        while (i<fileLineLen)
+        {
+            //taking input the quantity of room
+            quantity[j++]=fileLine[i++];
+        }
+        quantity[j]='\0';
+
+        NumberOfRooms[k] = atoi(quantity); //converting the array to integer and saving quantity in array
+        strcpy(roomType[k],typeroom); //putting type of room in an array
+        fgets(fileLine,256,prodFile);
+        k++;
+    }
+    itemsInFile=k;
+    fclose(prodFile);
+
+    //--------------- reading rooms file ends ----------------
+
+    if (end==0)   // not a day end
+    {
+
+        if (NumberOfRooms[index]!=0)
+        {
+            //decreasing the number of available rooms
+            NumberOfRooms[index] = NumberOfRooms[index]-1;
+            prodFile= fopen ("availableroom.txt","w+");
+
+            for (k=0;k<itemsInFile;k++)
+            {
+                //updating the list of available rooms
+                fprintf(prodFile, "%s = %d\n" , roomType[k],NumberOfRooms[k]);
+            }
+            fclose(prodFile);
+            return 0;
+        }
+        else
+        {
+            //if the room is not available
+            return 1;
+        }
+    }
+    else if (end==1)    // end of day
+    {
+        prodFile= fopen ("availableroom.txt","r");
+        printf("\n%12s %-20s %10s\n","S.No","Room Type","Available Rooms");
+        printf("%12s %-20s %10s\n","----","---------","---------------");
+
+        for (k=0;k<itemsInFile;k++)
+        {
+            //printing number of available rooms
+            printf ("%12d %-20s %10d\n",k+1,roomType[k],NumberOfRooms[k]);
+        }
+    }
+    fclose(prodFile);
+    return 0;
+}
+
+void checkout()
+{
+    int index, type;
+    char separator = '=';
+    //opening file
+    FILE *prodFile= fopen ("availableroom.txt","r");
+
+    char fileLine[256];
+    int  fileLineLen;
+    char typeroom[256];
+    char quantity[256];
+    int itemsInFile;
+
+    char roomType[5][256];
+    int NumberOfRooms[5];
+
+    int i=0,k;
+
+    fgets(fileLine,256,prodFile);
+    //checking if the file is empty
+    if (feof(prodFile))
+    {
+        printf ("No Data in this file. Exiting ....");
+        return 1;
+    }
+    // load data in array
+    k=0;
+    while(!feof(prodFile))
+    {
+        fileLineLen = strlen(fileLine);
+        i=0;
+        while(fileLine[i] != separator)
+        {
+            typeroom[i]=fileLine[i]; //taking input the type of room
+            i++;
+        }
+        typeroom[i]='\0';
+        int j=0;i++;
+        while (i<fileLineLen)
+        {
+            //taking input the quantity of room
+            quantity[j++]=fileLine[i++];
+        }
+        quantity[j]='\0';
+
+        NumberOfRooms[k] = atoi(quantity); //converting the array to integer and saving quantity in array
+        strcpy(roomType[k],typeroom); //putting type of room in an array
+        fgets(fileLine,256,prodFile);
+        k++;
+    }
+    itemsInFile=k;
+    fclose(prodFile);
+
+    //--------------- reading rooms file ends ----------------
+
+    printf("\nWhich room are you checking out from?\nPress 1 for Single bed room\nPress 2 for Double bed room\nPress 3 for Luxury room\n");
+    scanf("%d",&type);
+    index = type-1;
+    if (NumberOfRooms[index]!=5)
+        {
+            //increasing the number of available rooms
+            NumberOfRooms[index] = NumberOfRooms[index]+1;
+            prodFile= fopen ("availableroom.txt","w+");
+
+            for (k=0;k<itemsInFile;k++)
+            {
+                //updating the list of available rooms
+                fprintf(prodFile, "%s = %d\n" , roomType[k],NumberOfRooms[k]);
+            }
+            printf("\nCheck Out Successful.\n");
+        }
+        else printf("\nError. No rooms of this type are booked.\n");
+        fclose(prodFile);
+        printf("\n Has the day ended? Press 'N' for No and 'Y' for Yes.");
+        option=getch();
+}
+
+void DayEnd()
+{
+    //Day has ended
+    char viewin, choice=0,password[7]={0};
+    char passkey[7]={'s','e','c','r','e','t'};
+    int i,access=0;
+    //reviewing how many items are left in the inventory
+    printf("\nDo you want to view the inventories?\nPress 'Y' for Yes 'N' for No\n");
+    fflush(stdin);
+    viewin=getch();
+    if (viewin=='y'||viewin=='Y')
+    {
+        printf("\n\nEnter Administrator password: ");
+        fflush(stdin);
+        for (i=0;i<6;i++)
+        {
+            password[i]=getch();
+        }
+        //gets(password);
+        for (i=0;i<6;i++)
+        {
+            if (password[i]==passkey[i])
+            {
+                access=1;
+            }
+            else
+                access=0;
+        }
+        if (access==1)
+        {
+            printf("\nACCESS GRANTED.\n\n");
+            printf("\nDo you want to check the inventory?\nPress 'y' for yes.\n");
+            choice=getch();
+            if (choice=='Y'||choice=='y')
+            {
+                inventory(1,1); //printing inventory
+            }
+            //reviewing how many rooms are available
+            printf("\nDo you want to review avaiable rooms?\nPress 'y' for yes.\n");
+            choice=getch();
+            if (choice=='Y'||choice=='y')
+            {
+                availability(1,1); //printing available rooms
+            }
+            printf("\nThat's all for toady. Goodbye.\n");
+            getch();
+        }
+        else if (access==0)
+        {
+            printf("ACCESS DENIED.");
+            printf("\nThat's all for toady. Goodbye.\n");
+        }
+    }
+    else printf("Goodbye :)\n");
+}

@@ -1,0 +1,49 @@
+#include <stdio.h>
+
+void main()
+{
+    struct details
+    {
+        char name[20];
+        int price;
+        int qty;
+    };
+    struct details item[50];
+    int n, i, number;
+
+    printf("Enter number of items:");
+    scanf("%d", &n);
+    fflush(stdin);
+    for (i = 0; i < n; i++)
+    {
+        fflush(stdin);
+        printf("Item name: \n");
+        scanf("%s", item[i].name);
+        fflush(stdin);
+        printf("Quantity: \n");
+        scanf("%d", &item[i].qty);
+        fflush(stdin);
+        printf("price: \n");
+        scanf("%d",  &item[i].price);
+        fflush(stdin);
+    }
+    system("cls");
+    printf("\n\t\t*****  INVENTORY ***** \n");
+    printf("----------------------------------------------------------\n");
+    printf("S.N.|     NAME     |  QUANTITY  |  PRICE  \n");
+    printf("-----------------------------------------------------------\n");
+    for (i = 0; i < n; i++)
+        printf(" %d       %-15s  %-5d      %-5d \n", i + 1, item[i].name, item[i].qty, item[i].price);
+    printf("------------------------------------------------------------\n");
+    printf("\n\nenter item to be ordered:\n");
+    scanf("%d",&number);
+    item[number-1].qty = item[number-1].qty-1;
+    printf("\t\t*****  INVENTORY ***** \n");
+    printf("----------------------------------------------------------\n");
+    printf("S.N.|     NAME     |  QUANTITY  |  PRICE  \n");
+    printf("-----------------------------------------------------------\n");
+    for (i = 0; i < n; i++)
+        printf(" %d       %-15s  %-5d      %-5d \n", i + 1, item[i].name, item[i].qty, item[i].price);
+    printf("------------------------------------------------------------\n");
+
+}

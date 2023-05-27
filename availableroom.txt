@@ -1,0 +1,3 @@
+single bed                   = 5
+double bed                   = 5
+suite                        = 5

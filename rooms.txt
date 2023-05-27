@@ -1,0 +1,10 @@
+
+--------------------------------------------------
+   	   HOLIDAY-INN ROOMS
+ 
+   1. Single Bed Rooms............ PKR 10,000/-
+   2. Double Bed Rooms............ PKR 15,000/-
+   3. Suite....................... PKR 20,000/-
+
+(The prices mentioned are for a single night stay) 
+---------------------------------------------------

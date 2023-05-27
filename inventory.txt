@@ -1,0 +1,15 @@
+﻿Crab cake         =100
+Sushi             =100
+Hot fudge sundae  =100
+Lassagna          =100 
+Fried rice        =100  
+Dumplings         =100  
+Finger fish       =100
+Fried fish        =100
+Prawns            =100
+Alfredo pasta     =100
+Fresh juice       =100
+Soft drinks       =100
+Milk tea          =100
+Coffee            =100
+Lassi             =100

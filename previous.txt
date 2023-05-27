@@ -1,0 +1,106 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
+
+/*Menu Cafe
+1. Cookies 30/-
+2. Fries 50/-
+3. Fries 100/-
+4. Mini Pizza 100/-
+5. Club Sandwich 150/-
+6. Pasta 200/-
+7. Burger 200/-
+8. Cupcake 50/-
+9. Pastry 70/-
+10. Donut 80/-
+11. Cinnamon bun 80/-
+12. Tea 20/-
+13. Coffee 50/-
+14. Juice 50/-
+15. Hot Chocolate 70/-
+*/
+int order (int menu);
+
+int main()
+{
+    int item, c;
+    char choice;
+    {
+        printf("\n-----------WELCOME TO AFISKO-----------\n\n");
+        printf("Are you hungry? or Are you sleepy?\nLet us know!\n");
+        printf("Press 'C' to go to the cafe and Press 'R' to go to the rooms.\n");
+        choice=getche();
+        if (choice=='C'||choice=='c')
+        {
+            printf("\n------WELCOME TO CAFE AFISKO------\n\n");
+            printf("Please take a look at our menu :)\n");
+            printf("1. Cookies 30/-\n2. Fries 50/-\n3. Fries 100/-\n4. Mini Pizza 100/-\n5. Club Sandwich 150/-\n6. Pasta 200/-\n7. Burger 200/-\n8. Cupcake 50/-\n9. Pastry 70/-\n10. Donut 80/-\n11. Cinnamon bun 80/-\n12. Tea 20/-\n13. Coffee 50/-\n14. Juice 50/-\n15. Hot Chocolate 70/-\n");
+            do
+            {
+                printf("Input item number: \n");
+                scanf("%d",&item);
+                order (item);
+                printf("\nAre there more items?\nPress 1 to add more items and Press 0 to end.\n");
+                scanf("%d",&c);
+            }
+            while (c==1);
+            printf("Thank you for visiting cafe AFISKO. :)");
+        }
+
+
+
+}
+
+int order (int menu)
+{
+
+switch(menu)
+{
+    case 1:
+    printf("Your tea will be served shortly, please pay 20 pkr to the counter");
+    break;
+    case 2:
+    printf("Your coffee will be served shortly, please pay 50 pkr at the counter");
+    break;
+    case 3:
+    printf("Your juice will be served shortly, please pay 50 pkr at the counter");
+    break;
+    case 4:
+    printf("Your hot chocolate will be served shortly, please pay 70 pkr at the counter");
+    break;
+    case 5:
+    printf("Your mini pizza will be served shortly, please pay 100 prk at the counter");
+    break;
+    case 6:
+    printf("Your fries will be served shortly, please pay 50 pkr at the counter");
+    break;
+    case 7:
+    printf("Your large fries will be served shortly, please pay 100 pkr at the counter");
+    break;
+    case 8:
+    printf("Your cookies will be served shortly, please pay 30 pkr at the counter");
+    break;
+    case 9:
+    printf("Your pasta will be served shortly, please pay 200 pkr at the counter");
+    break;
+    case 10:
+    printf("Your club sandwich will be served shortly, please pay 150 pkr at the counter");
+    break;
+    case 11:
+    printf("Your burger will be served shortly, please pay 200 pkr at the counter");
+    break;
+    case 12:
+    printf("Your cupcake will be served shortly, please pay 50 pkr at the counter");
+    break;
+    case 13:
+    printf("Your pastry will be served shortly, please pay 70 pkr at the counter");
+    break;
+    case 14:
+    printf("Your donut will be served shortly, please pay 80 pkr at the counter");
+    break;
+    case 15:
+    printf("Your cinnamon bun will be served shortly, please pay 80 pkr at the counter");
+    break;
+};
+}
+}

@@ -1,0 +1,20 @@
+Cookies       =100
+Fries         =100
+Large Fries   =100
+Mini Pizza    =100
+Club Sandwich =100
+Pasta         =100
+Burger        =100
+Cupcake       =100
+Pastry        =100
+Donut         =100
+Cinnamon bun  =100
+Tea           =100
+Coffee        =100
+Juice         =100
+Hot Chocolate =100
+
+
+single bed = 5
+double bed = 5
+luxury room = 5
